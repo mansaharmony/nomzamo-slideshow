@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nomzamo's Slideshow</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #FF6F61;
+            margin-bottom: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            background-color: #4BA3B3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-bottom: 20px;
+        }
+
+        button:hover {
+            background-color: #3b8a90;
+        }
+
+        #slideshow-container {
+            margin-top: 20px;
+            display: none;
+            position: relative;
+            overflow: hidden;
+            width: 100%; /* Full width */
+            max-width: 800px; /* Limit maximum width for large screens */
+            margin-left: auto; /* Center align */
+            margin-right: auto; /* Center align */
+        }
+
+        #slideshow-image {
+            width: 100%; /* Responsive width */
+            height: auto; /* Maintain aspect ratio */
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        /* Glitch effect */
+        @keyframes glitch {
+            0% { transform: translate(0); }
+            10% { transform: translate(-2px, 2px); }
+            20% { transform: translate(-2px, -2px); }
+            30% { transform: translate(2px, 2px); }
+            40% { transform: translate(2px, -2px); }
+            50% { transform: translate(0); }
+            100% { transform: translate(0); }
+        }
+
+        #poem {
+            margin-top: 20px; /* Adjust for spacing */
+            font-size: 1.2em;
+            color: #4BA3B3;
+            display: none; /* Hidden initially */
+            position: absolute; /* Position it in the same area as images */
+            top: 0; /* Align with top of slideshow container */
+            left: 0; /* Align with left of slideshow container */
+            right: 0; /* Align with right of slideshow container */
+            width: 100%; /* Full width */
+        }
+
+        footer {
+            margin-top: 50px;
+            font-size: 0.9em;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Nomzamo's Slideshow</h1>
+
+    <button id="start-button"><i class="fas fa-play"></i> Start Slideshow</button>
+
+    <div id="slideshow-container">
+        <img id="slideshow-image" src="" alt="Slideshow Image">
+        <div id="poem">
+            <p>In every picture, a story told,<br>
+            Of laughter, dreams, and hearts of gold.<br>
+            With each frame, a moment to treasure,<br>
+            Memories captured, beyond all measure.</p>
+            <p>Nomzamo, you shine like the sun,<br>
+            In this slideshow, we have just begun.<br>
+            May your days be filled with light,<br>
+            With joy and love, forever in sight.</p>
+        </div>
+    </div>
+
+    <audio id="background-music" src="music/background.mp3" preload="auto"></audio>
+
+    <footer>
+        Site by Mansa Harmony<br>
+        For my beautiful Nomzamo (Princess).
+    </footer>
+
+    <script>
+        const images = [
+            'images/image1.jpg',
+            'images/image2.jpg',
+            'images/image3.jpg',
+            'images/image4.jpg',
+            'images/image5.jpg',
+            'images/image6.jpg',
+            'images/image7.jpg',
+            'images/image8.jpg',
+            'images/image9.jpg'
+        ];
+
+        let currentIndex = 0;
+        const slideshowContainer = document.getElementById('slideshow-container');
+        const slideshowImage = document.getElementById('slideshow-image');
+        const poem = document.getElementById('poem');
+        const backgroundMusic = document.getElementById('background-music');
+
+        // Total duration of the song in seconds
+        const audioDuration = 108; // 1 minute and 48 seconds
+
+        // Calculate time per image based on total duration and number of images
+        const timePerImage = audioDuration / images.length; // time allocated for each image
+
+        document.getElementById('start-button').onclick = function() {
+            slideshowContainer.style.display = 'block';
+            document.getElementById('start-button').style.display = 'none'; // Hide the start button
+            backgroundMusic.play(); // Play the background music
+            playSlideshow();
+        };
+
+        function playSlideshow() {
+            if (currentIndex < images.length) {
+                slideshowImage.src = images[currentIndex];
+                slideshowImage.style.opacity = 0; // Start with opacity 0
+                slideshowImage.style.animation = 'none'; // Reset animation
+
+                setTimeout(() => {
+                    slideshowImage.style.opacity = 1; // Fade in the image
+                    slideshowImage.style.animation = 'glitch 1s infinite'; // Add glitch effect
+                }, 100); // Small delay for effect
+                
+                currentIndex++;
+                setTimeout(() => {
+                    slideshowImage.style.animation = 'none'; // Reset glitch effect before fading out
+                    slideshowImage.style.opacity = 0; // Fade out the image
+                }, timePerImage * 1000 - 100); // Display image for calculated time
+                
+                setTimeout(playSlideshow, timePerImage * 1000); // Change image based on calculated time
+            } else {
+                currentIndex = 0; // Reset to start
+                setTimeout(() => {
+                    poem.style.display = 'block'; // Show the poem after the slideshow
+                }, 1000); // Delay to show the poem
+                backgroundMusic.pause(); // Pause music after slideshow
+            }
+        }
+    </script>
+
+</body>
+</html>
